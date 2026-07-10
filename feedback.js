@@ -4,7 +4,7 @@
 // 3. Deploy as Web App (Anyone)
 // 4. Paste your Web App URL below
 
-const SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzQp3sK69m5VDAXdiSRpQnPuiLxK_FF1xqVZ7IER914rC0NvzOp-7W9DHJCpJtNmKPm1Q/exec';
 window.SM_FEEDBACK_SCRIPT_URL = SCRIPT_URL;
 
 function toast(msg, ok=true){
