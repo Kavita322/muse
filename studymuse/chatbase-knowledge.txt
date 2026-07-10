@@ -1,0 +1,98 @@
+StudyMuseAI – Chatbot Knowledge Base
+========================================
+
+What is StudyMuseAI?
+StudyMuseAI is a calm, focus-first student companion web app. Built with a soft lavender UI, light/dark theme.
+Main features: Pomodoro Focus Timer, 6-Mood Tracker, Timetable Manager, Feedback / Application Form with Google Sheets, Firebase Authentication, Chatbase Chatbot.
+
+1. Pomodoro Focus Timer
+- Work/break intervals: default 25/5, also 50/10, and custom
+- Controls: Start / Pause / Reset / Skip
+- Shows sessions today, total focus minutes, daily streak counter
+- Gentle sound chime + browser notification when session ends
+- Session history saved in localStorage, syncs to Firestore if logged in
+
+2. Mood Tracker – 6 Moods
+- Energetic 🔆
+- Calm 🌿
+- Focused 🎯
+- Stressed 😣
+- Tired 😴
+- Low / Sad 🌧️
+- One-tap check-in, timestamped log
+- Weekly mood trend chart on dashboard
+
+3. Timetable Manager
+- Enter your Subjects (comma separated), e.g. Digital Electronics, Networking, Cybersecurity
+- Enter Free hours per day
+- Enter Upcoming deadlines
+- Click "Build my plan" – generates a 7-day study timetable
+- If your mood is Stressed / Tired / Low, the plan auto-reduces load by 30%
+- Click "Regenerate" to rebuild
+
+4. Feedback / Application Form
+- Fields: Name*, Class / Year*, Domain / Interest*, Email*, Feedback / Message
+- Domains: Cybersecurity, Digital Electronics, Networking, Programming / DSA, AI / ML, Web Development, Other
+- Submits directly to Google Sheets via Google Apps Script
+- Google Sheet columns: Timestamp | Name | Class | Domain | Email | Feedback | Mood | UserID
+- User receives an auto-reply confirmation email: "Thanks for your feedback – StudyMuseAI"
+- Dashboard has a Quick Submit form too
+
+5. Firebase Authentication
+- Email/Password sign-up and login
+- Google Sign-In optional
+- Guest / Demo mode available – Continue as Guest
+- Firestore stores: user profile, mood logs, Pomodoro session history, timetable
+- Config file: js/firebase-config.js – paste your apiKey, authDomain, projectId etc.
+
+6. Chatbot
+- This is you – StudyMuseAI Chatbase Assistant
+- Helps with app navigation, doubt-clearing, study tips
+- Floating widget on every page
+
+7. Pages
+- index.html – Landing page + Login / Sign up
+- dashboard.html – Main app: Timetable, Mood, Pomodoro, Feedback
+- feedback.html – Full Feedback / Application form
+
+8. Tech Stack
+- Frontend: HTML / CSS / JS, vanilla, no framework
+- Auth + DB: Firebase Authentication + Firestore
+- Feedback: Google Sheets via Apps Script Web App
+- Chatbot: Chatbase
+- Hosting: GitHub Pages compatible
+- UI Colors – Light: Background #FAF9FC, Surface #FFFFFF, Primary #A78BDB, Accent #7C5CBF, Text #2B2438
+  Dark: Background #1C1626, Surface #241B33, Primary #B79EF0, Text #F2EEF9
+
+FAQ
+Q: How do I start a Pomodoro session?
+A: Go to Dashboard → Pomodoro Focus card → choose 25/5, 50/10, or Custom → click Start.
+
+Q: How do I log my mood?
+A: Dashboard → Mood Check-in → tap one of the 6 moods → Log mood. Weekly trend updates automatically.
+
+Q: How do I build a timetable?
+A: Dashboard → Timetable Manager → enter Subjects, Free hours/day, Deadlines → Build my plan.
+
+Q: Where does my feedback go?
+A: Name, Class, Domain, Email + Feedback is sent to Google Sheets via Apps Script. You get an auto-reply email confirmation.
+
+Q: Do I need to sign in?
+A: No. Click "Continue as Guest (demo)" on index.html. Sign in with Firebase is optional for cloud sync.
+
+Q: How do I enable the chatbot?
+A: Get a chatbotId from chatbase.co → open index.html and dashboard.html → uncomment the Chatbase embed block at the bottom → replace CHATBOT_ID.
+
+Q: How do I connect Google Sheets?
+A: Create Sheet with headers Timestamp|Name|Class|Domain|Email|Feedback|Mood|UserID → Extensions → Apps Script → paste Code_with_email.gs → Deploy Web App → Anyone → copy URL → paste into js/feedback.js SCRIPT_URL.
+
+Q: Is there music/playlist?
+A: No. Music/playlist feature was removed. Current version is Pomodoro + Mood + Timetable + Feedback only.
+
+Q: I don't receive the feedback confirmation email?
+A: Check: 1) In Code_with_email.gs, ADMIN_EMAIL is set correctly, 2) SEND_CONFIRMATION_TO_USER = true, 3) Apps Script is deployed as "Anyone", 4) Check Spam folder.
+
+Contact / Support
+Feedback form: feedback.html
+Email: via the Feedback form
+Project: StudyMuseAI, 2026 – built with lavender and focus.
