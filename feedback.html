@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feedback / Apply — StudyMuseAI</title>
+<link rel="stylesheet" href="style.css">
+<meta name="color-scheme" content="light dark">
+</head>
+<body>
+<header class="header">
+  <div class="brand">
+    <div class="brand-badge">SM</div>
+    <span>StudyMuseAI</span>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-ghost btn-sm" id="themeToggle">🌙</button>
+    <a class="btn btn-sm" href="dashboard.html">Dashboard</a>
+  </div>
+</header>
+
+<main class="container" style="max-width:720px; padding-top:32px">
+  <div class="card">
+    <h1>Feedback / Application</h1>
+    <p class="muted">Tell us about you. This goes straight to Google Sheets.</p>
+    
+    <form id="feedbackForm" novalidate>
+      <div class="form-row">
+        <div>
+          <label for="name">Name *</label>
+          <input type="text" id="name" name="name" placeholder="Aarav Sharma" required>
+        </div>
+        <div>
+          <label for="class">Class / Year *</label>
+          <input type="text" id="class" name="class" placeholder="B.Tech CSE - 3rd Year" required>
+        </div>
+      </div>
+      <div style="height:12px"></div>
+      <div class="form-row">
+        <div>
+          <label for="domain">Domain / Interest *</label>
+          <select id="domain" name="domain" required>
+            <option value="">Select…</option>
+            <option>Cybersecurity</option>
+            <option>Digital Electronics</option>
+            <option>Networking</option>
+            <option>Programming / DSA</option>
+            <option>AI / ML</option>
+            <option>Web Development</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div>
+          <label for="email">Email *</label>
+          <input type="email" id="email" name="email" placeholder="you@university.edu" required>
+        </div>
+      </div>
+      <div style="height:12px"></div>
+      <label for="feedback">Feedback / Message</label>
+      <textarea id="feedback" name="feedback" placeholder="What do you want from StudyMuseAI? Any bugs, feature requests, or application note…"></textarea>
+
+      <!-- honeypot -->
+      <input type="text" name="website" id="website" style="display:none" tabindex="-1" autocomplete="off">
+
+      <div style="height:18px"></div>
+      <button class="btn btn-primary" type="submit" id="submitBtn" style="width:100%">Submit to Google Sheet</button>
+      <p class="small muted" style="text-align:center; margin-top:10px" id="formStatus">Secure • Writes to your Google Sheet via Apps Script</p>
+    </form>
+  </div>
+
+  <div class="card" style="margin-top:20px">
+    <h3>Google Sheet Setup — 1 min</h3>
+    <ol class="small muted">
+      <li>Create a new Google Sheet. Name it <b>StudyMuseAI Feedback</b></li>
+      <li>In Row 1, add these exact headers:
+        <br><code>Timestamp | Name | Class | Domain | Email | Feedback | Mood | UserID</code>
+      </li>
+      <li>Extensions → Apps Script → paste the code from <code>google-apps-script/Code.gs</code></li>
+      <li>Deploy → New deployment → Type: Web app → Execute as: Me → Who has access: Anyone</li>
+      <li>Copy the Web app URL → paste it in <code>feedback.js</code> at <code>SCRIPT_URL</code></li>
+    </ol>
+    <p class="small">Your Apps Script endpoint is saved in <code>feedback.js</code>. Current: <span id="scriptUrlLabel" class="kbd" style="word-break:break-all">not set</span></p>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="feedback.js"></script>
+<script>
+  // theme toggle
+  const root = document.documentElement;
+  const saved = localStorage.getItem('sm_theme');
+  if (saved) root.setAttribute('data-theme', saved);
+  document.getElementById('themeToggle').onclick = () => {
+    const cur = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', cur);
+    localStorage.setItem('sm_theme', cur);
+    document.getElementById('themeToggle').textContent = cur === 'dark' ? '☀️' : '🌙';
+  };
+  document.getElementById('scriptUrlLabel').textContent = window.SM_FEEDBACK_SCRIPT_URL || 'not set - edit feedback.js';
+</script>
+
+<!-- Chatbase – StudyMuseAI MUSE -->
+<script>
+(function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...args)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(args)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="vMIKUkhTzjlOwTLt-lh2-";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
+</script>
+</body>
+</html>
