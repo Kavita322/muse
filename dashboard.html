@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard — StudyMuseAI</title>
+<link rel="stylesheet" href="css/style.css">
+<meta name="color-scheme" content="light dark">
+</head>
+<body>
+<header class="header">
+  <div class="brand">
+    <div class="brand-badge">SM</div>
+    <span>StudyMuseAI</span>
+    <span class="pill" id="streakPill" style="margin-left:8px">🔥 0-day streak</span>
+  </div>
+  <div class="header-actions">
+    <span class="muted small" id="userEmail">guest</span>
+    <button class="btn btn-ghost btn-sm" id="themeToggle">🌙</button>
+    <button class="btn btn-sm" id="signOutBtn">Sign out</button>
+  </div>
+</header>
+
+<main class="container" style="padding-top:28px">
+  <div class="dashboard-grid">
+    <!-- Left column -->
+    <div class="grid" style="gap:20px">
+      <!-- Timetable Manager -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <h2>Today's Timetable</h2>
+          <button class="btn btn-sm" id="regenPlanBtn">Regenerate</button>
+        </div>
+        <div id="timetable" class="timetable">
+          <div class="muted small">No plan yet — generate one below.</div>
+        </div>
+        <hr class="soft">
+        <h3>Timetable Manager</h3>
+        <div class="form-row">
+          <div>
+            <label>Subjects (comma separated)</label>
+            <input id="coachSubjects" placeholder="e.g. Digital Electronics, Networking, Cybersecurity">
+          </div>
+          <div>
+            <label>Free hours / day</label>
+            <input id="coachHours" type="number" min="1" max="12" value="3">
+          </div>
+        </div>
+        <div style="height:10px"></div>
+        <label>Upcoming deadlines</label>
+        <textarea id="coachDeadlines" placeholder="e.g. Networking quiz - Dec 18, DE lab report - Dec 20"></textarea>
+        <div style="height:10px"></div>
+        <button class="btn btn-primary" id="buildPlanBtn">Build my plan</button>
+        <p class="small muted" style="margin-top:10px">Plan auto-readjusts when your mood logs show fatigue/stress.</p>
+      </div>
+
+      <!-- Feedback / Application -->
+      <div class="card">
+        <h2>Feedback / Application</h2>
+        <p class="muted small">Name, Class, Domain, Email → saved to your Google Sheet.</p>
+        <a class="btn btn-primary" href="feedback.html">Open Feedback Form</a>
+        <p class="small muted" style="margin-top:10px">Set your Apps Script Web App URL in <span class="kbd">js/feedback.js</span></p>
+        <hr class="soft">
+        <h3>Quick submit</h3>
+        <form id="inlineFeedbackForm" style="display:grid; gap:10px">
+          <div class="form-row">
+            <input type="text" name="name" placeholder="Name *" required>
+            <input type="text" name="class" placeholder="Class / Year *" required>
+          </div>
+          <div class="form-row">
+            <input type="text" name="domain" placeholder="Domain *" required list="domainList">
+            <datalist id="domainList">
+              <option value="Cybersecurity">
+              <option value="Digital Electronics">
+              <option value="Networking">
+              <option value="Programming / DSA">
+              <option value="AI / ML">
+              <option value="Web Development">
+            </datalist>
+            <input type="email" name="email" placeholder="Email *" required>
+          </div>
+          <textarea name="feedback" placeholder="Feedback / Message (optional)" style="min-height:70px"></textarea>
+          <button class="btn" type="submit">Submit to Google Sheet</button>
+          <span class="small muted" id="inlineFeedbackStatus"></span>
+        </form>
+      </div>
+    </div>
+
+    <!-- Right column -->
+    <div class="grid" style="gap:20px">
+      <!-- Mood -->
+      <div class="card">
+        <h2>Mood Check-in</h2>
+        <p class="muted small">How are you feeling right now?</p>
+        <div class="mood-grid" id="moodGrid">
+          <!-- buttons injected -->
+        </div>
+        <div style="height:12px"></div>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap">
+          <span class="small muted">Current: <b id="currentMoodLabel">—</b></span>
+          <button class="btn btn-sm" id="logMoodBtn">Log mood</button>
+        </div>
+        <hr class="soft">
+        <h3>Weekly trend</h3>
+        <div class="chart-wrap"><canvas id="moodChart" width="600" height="140"></canvas></div>
+      </div>
+
+      <!-- Pomodoro -->
+      <div class="card">
+        <h2>Pomodoro Focus</h2>
+        <div class="timer-modes" id="timerModes">
+          <button class="mode-btn active" data-focus="25" data-break="5">25 / 5</button>
+          <button class="mode-btn" data-focus="50" data-break="10">50 / 10</button>
+          <button class="mode-btn" data-focus="custom" data-break="custom">Custom</button>
+        </div>
+        <div id="customTimes" style="display:none; gap:8px; justify-content:center; margin-bottom:8px;">
+          <input type="number" id="customFocus" min="1" max="180" value="25" style="width:110px" placeholder="Focus min">
+          <input type="number" id="customBreak" min="1" max="60" value="5" style="width:110px" placeholder="Break min">
+        </div>
+        <div class="timer-display" id="timerDisplay">25:00</div>
+        <div class="timer-controls">
+          <button class="btn btn-primary" id="startPauseBtn">Start</button>
+          <button class="btn" id="resetBtn">Reset</button>
+          <button class="btn btn-ghost" id="skipBtn" title="Skip to break/work">Skip</button>
+        </div>
+        <div class="stat-row">
+          <div class="stat"><b id="sessionsToday">0</b><span class="muted small">sessions today</span></div>
+          <div class="stat"><b id="totalFocusMin">0</b><span class="muted small">focus min</span></div>
+          <div class="stat"><b id="streakCount">0</b><span class="muted small">day streak</span></div>
+        </div>
+        <p class="small muted" style="text-align:center;margin-top:10px">Session history syncs to Firestore when signed in.</p>
+      </div>
+
+      <!-- Quick help -->
+      <div class="card">
+        <h2>Need help?</h2>
+        <p class="muted small">Open the StudyMuse chat assistant for instant doubt-clearing.</p>
+        <button class="btn btn-primary" id="openChatbotBtn">Open Chatbot</button>
+        <p class="small muted" style="margin-top:10px">Set your Chatbase <span class="kbd">chatbotId</span> in <span class="kbd">dashboard.html</span> footer to enable.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<footer class="footer">StudyMuseAI — calm focus, every day.</footer>
+
+<!-- Load Feedback SCRIPT_URL first, so app.js can use it -->
+<script src="js/feedback.js"></script>
+<script type="module" src="js/firebase-config.js"></script>
+<script type="module" src="js/app.js"></script>
+
+<!-- Chatbase embed - replace CHATBOT_ID -->
+<!--
+<script>
+window.embeddedChatbotConfig = {
+  chatbotId: "CHATBOT_ID",
+  domain: "www.chatbase.co"
+}
+</script>
+<script src="https://www.chatbase.co/embed.min.js" chatbotId="CHATBOT_ID" domain="www.chatbase.co" defer></script>
+<script>
+document.getElementById('openChatbotBtn')?.addEventListener('click', ()=> {
+  // Chatbase exposes a global toggle in most embeds
+  window.chatbase?.open && window.chatbase.open();
+});
+</script>
+-->
+<script>
+  // Fallback chatbot button if Chatbase not configured
+  document.getElementById('openChatbotBtn')?.addEventListener('click', ()=> {
+    if (!window.chatbase) alert('Plug in your Chatbase chatbotId in dashboard.html to enable the floating chat widget.');
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StudyMuseAI — Focus-first student companion</title>
+<link rel="stylesheet" href="css/style.css">
+<meta name="color-scheme" content="light dark">
+</head>
+<body>
+<header class="header">
+  <div class="brand">
+    <div class="brand-badge">SM</div>
+    <span>StudyMuseAI</span>
+  </div>
+  <div class="header-actions">
+    <button class="btn btn-ghost btn-sm" id="themeToggle" aria-label="Toggle theme">🌙</button>
+    <a class="btn btn-sm" href="dashboard.html">Open Dashboard</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero container">
+    <div class="pill">Calm • Focus • Plan</div>
+    <h1>StudyMuseAI</h1>
+    <p>A calm, focus-first student companion. Pomodoro timer, 6-mood tracker, timetable manager, Google Sheets feedback form, and a live chatbot — in a soft lavender UI.</p>
+    <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+      <a class="btn btn-primary" href="dashboard.html">Launch Dashboard</a>
+      <a class="btn" href="feedback.html">Feedback / Apply</a>
+      <a class="btn" href="#auth">Sign in</a>
+    </div>
+
+    <div class="feature-list container">
+      <div class="card feature"><h3>🍅 Pomodoro Timer</h3><p class="muted small">25/5, 50/10, or custom. Streaks, session history, gentle chime.</p></div>
+      <div class="card feature"><h3>🌿 6-Mood Tracker</h3><p class="muted small">Energetic, Calm, Focused, Stressed, Tired, Low. Weekly trend.</p></div>
+      <div class="card feature"><h3>📝 Feedback / Apply</h3><p class="muted small">Name, Class, Domain, Email → direct to Google Sheets via Apps Script.</p></div>
+      <div class="card feature"><h3>🧠 Timetable Manager</h3><p class="muted small">Builds study timetables from subjects & deadlines, auto-readjusts for fatigue.</p></div>
+      <div class="card feature"><h3>💬 Chatbase Bot</h3><p class="muted small">Floating doubt-clearing widget on every page.</p></div>
+      <div class="card feature"><h3>🔐 Firebase Auth</h3><p class="muted small">Email/Google login. Firestore for moods, sessions, plans.</p></div>
+    </div>
+  </section>
+
+  <section id="auth" class="container auth-wrap">
+    <div class="card auth-card">
+      <h2>Welcome back</h2>
+      <p class="muted small">Sign in to sync your moods, Pomodoro history, and timetables.</p>
+      <div class="auth-tabs" role="tablist">
+        <div class="auth-tab active" data-tab="signin">Sign in</div>
+        <div class="auth-tab" data-tab="signup">Sign up</div>
+      </div>
+
+      <form id="authForm" autocomplete="on">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="you@university.edu" required>
+        <div style="height:10px"></div>
+        <label>Password</label>
+        <input type="password" id="password" placeholder="••••••••" required minlength="6">
+        <div style="height:16px"></div>
+        <button class="btn btn-primary" type="submit" style="width:100%" id="authSubmitBtn">Sign in</button>
+      </form>
+      <div style="height:10px"></div>
+      <button class="btn" style="width:100%" id="googleBtn">Continue with Google</button>
+      <div style="height:10px"></div>
+      <button class="btn btn-ghost" style="width:100%" id="demoBtn">Continue as Guest (demo)</button>
+      <p class="muted small" style="margin-top:14px">By continuing you agree to the calm-study vibes. Firebase config is in <span class="kbd">js/firebase-config.js</span>.</p>
+      <p class="small" id="authStatus"></p>
+    </div>
+  </section>
+
+  <footer class="footer">© 2026 StudyMuseAI — built with lavender and focus.</footer>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script type="module" src="js/firebase-config.js"></script>
+<script type="module" src="js/auth.js"></script>
+<script>
+  // Theme
+  const root = document.documentElement;
+  const saved = localStorage.getItem('sm_theme') || 'auto';
+  if (saved !== 'auto') root.setAttribute('data-theme', saved);
+  document.getElementById('themeToggle').onclick = () => {
+    const cur = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', cur);
+    localStorage.setItem('sm_theme', cur);
+    document.getElementById('themeToggle').textContent = cur === 'dark' ? '☀️' : '🌙';
+  };
+  // Auth tabs
+  let mode='signin';
+  document.querySelectorAll('.auth-tab').forEach(t => t.addEventListener('click', () => {
+    document.querySelectorAll('.auth-tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    mode = t.dataset.tab;
+    document.getElementById('authSubmitBtn').textContent = mode === 'signin' ? 'Sign in' : 'Create account';
+  }));
+  document.getElementById('authForm').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    window.SM_AUTH?.submit(mode, email, password);
+  });
+  document.getElementById('googleBtn').onclick = ()=> window.SM_AUTH?.google();
+  document.getElementById('demoBtn').onclick = ()=> { localStorage.setItem('sm_demo_user','guest'); location.href='dashboard.html'; };
+</script>
+
+<!-- Chatbase embed - replace CHATBOT_ID -->
+<!--
+<script>
+window.embeddedChatbotConfig = {
+  chatbotId: "CHATBOT_ID",
+  domain: "www.chatbase.co"
+}
+</script>
+<script src="https://www.chatbase.co/embed.min.js" chatbotId="CHATBOT_ID" domain="www.chatbase.co" defer></script>
+-->
+</body>
+</html>
